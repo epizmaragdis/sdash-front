@@ -85,12 +85,12 @@ export class BubbleComponent implements OnChanges, AfterViewInit {
     //   .attr("fill", "#FFF")
     //   .attr("transform", function(d) { return "translate(" + (-d.x + 3) +"," + (-d.y + 400) +  ")"; });
     //
-    this.node.append("text")
-      .attr("class", "tweet ")
-      .attr("text-anchor", "middle")
-      .attr("transform", function(d) { return "translate(" + (-d.x + 203) +"," + (-d.y + 425) +  ")"; })
-      .text(function (d){return d.text;})
-      ;
+    // this.node.append("text")
+    //   .attr("class", "tweet ")
+    //   .attr("text-anchor", "middle")
+    //   .attr("transform", function(d) { return "translate(" + (-d.x + 203) +"," + (-d.y + 425) +  ")"; })
+    //   .text(function (d){return d.text;})
+    //   ;
 
     this.node.append("circle")
       .attr("id", function(d) { return d.id; })
@@ -101,7 +101,8 @@ export class BubbleComponent implements OnChanges, AfterViewInit {
       .attr("data-trigger", "hover")
       .attr("data-html", "true")
       .attr("data-placement","top")
-      .attr("data-content", function(d) { return d.followers_count + "<br> Seguidores <br>"/* + d.text */; });
+      .attr("data-title", function(d) { return d.followers_count + " Seguidores"/* + d.text */; } )
+      .attr("data-content", function(d) { return /*d.followers_count + "<br> Seguidores <br>"+*/ d.text ; });
 
     this.node.append("clipPath")
       .attr("id", function(d) { return "clip-" + d.id; })
