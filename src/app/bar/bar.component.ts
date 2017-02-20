@@ -45,7 +45,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
   ngOnChanges(): void {
 
     this.now = Moment.utc();
-    this.start = Moment().subtract(1, 'hours').utc();
+    this.start = Moment().subtract(55, 'minutes').utc();
 
     if (!this.config || this.config.length === 0 || !this.host) {
       return;
@@ -90,11 +90,11 @@ export class BarComponent implements OnChanges, AfterViewInit {
     var xScale = D3.scaleTime().range([20, this.width])
       .domain([this.start, this.now]);
 
-    var zScale = D3.scaleOrdinal(['#daedfe','#e3f5dd','#fdb9ae','#cccccc'])
+    var zScale = D3.scaleOrdinal(['#1A4589','#9ADBF4','#007EA7  ','#EF233C', '#991B1E'])
       .domain(this.dataset.columns);
 
-    var zScale2 = D3.scaleOrdinal(['#CCC','#000','#f0f0f0','#cccccc'])
-      .domain(this.dataset.columns);
+    // var zScale2 = D3.scaleOrdinal(['#CCC','#000','#f0f0f0','#cccccc'])
+    //   .domain(this.dataset.columns);
 
     // var zScale = D3.scaleOrdinal(['positive','negative','#fdb9ae'])
     //   .domain(this.dataset.columns);
@@ -115,10 +115,9 @@ export class BarComponent implements OnChanges, AfterViewInit {
     this.serie = this.svg.selectAll(".serie")
       .data(this.stack.keys(this.dataset.columns)(this.dataset))
       .enter().append("g")
-      .attr("class", "serie")
-      .attr("fill",  function(d) { return zScale(d.key); });
-      // .attr("stroke", function(d) { return zScale2(d.key) })
-      // .attr("stroke-width", "2px");
+      .attr("fill",  function(d) { return zScale(d.key); })
+      .attr("stroke", function(d) { return zScale(d.key); })
+      .attr("stroke-width", "2px");
       // .attr("stroke-opacity", 1)
       // .attr("stroke-width", 1)
 
@@ -129,6 +128,8 @@ export class BarComponent implements OnChanges, AfterViewInit {
       .attr("y", function(d) { return yScale(d[1]); })
       .attr("height", function(d) { return yScale(d[0]) - yScale(d[1]); })
       .attr("width", 20)
+      .attr("opacity", "0.4")
+      .attr("stroke-opacity","0")
       .attr("data-container", "body")
       .attr("data-toggle", "popover")
       .attr("data-trigger", "hover")
@@ -140,9 +141,9 @@ export class BarComponent implements OnChanges, AfterViewInit {
       .data(function(d) { return d; })
       .enter().append("line")
       .attr("x1", function(d) { return xScale(d.data.date) - 20; })
-      .attr("y1", function(d) { return yScale(d[0]) + 1; })
+      .attr("y1", function(d) { return yScale(d[1]); })
       .attr("x2", function(d) { return xScale(d.data.date) })
-      .attr("y2", function(d) { return yScale(d[0]) + 1; });
+      .attr("y2", function(d) { return yScale(d[1]); });
       // .attr("style", function(d) {
       //   return "stroke:" + zScale(d.fill) + ";stroke-width:2px";
       // });

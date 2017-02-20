@@ -21,3 +21,18 @@
   stroke: #999999;
   stroke-width: 1px;
 }
+
+.tweet {
+    display:none;
+    font: 14px sans-serif;
+    white-space: normal;
+    word-break: normal;
+    word-spacing: normal;
+    word-wrap: break-word;
+
+}
+
+
+.node:hover .tweet {
+    display:block;
+}

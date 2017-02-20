@@ -38,7 +38,7 @@ export class DataComponent implements OnInit {
 
         let bubbleChartArea: BubbleChartConfig = {
           dataset: tweets.docs.map(data => {
-            return { screen_name: data.screen_name, followers_count: data.followers_count, sentiment: data.sentiment.type };
+            return { screen_name: data.screen_name, followers_count: data.followers_count, sentiment: data.sentiment.type, text: data.text };
           })
         };
 

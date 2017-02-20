@@ -1,5 +1,5 @@
 export interface BubbleChartConfig {
-  dataset: Array<{ screen_name: string, followers_count: number, sentiment: string }>
+  dataset: Array<{ screen_name: string, followers_count: number, sentiment: string, text: string }>
 }
 //
 // export interface ChartConfig {
