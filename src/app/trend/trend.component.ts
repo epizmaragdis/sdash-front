@@ -60,17 +60,11 @@ export class TrendComponent implements OnChanges, AfterViewInit {
 
   private populate(): void {
 
-    // console.log(this.config.dataset);
     var pos = this.config.dataset.filter(d=> {return d.score > 0 });
 
     var neg = this.config.dataset.filter(d=> {return d.score <= 0 });
 
-    // var entries = D3.nest()
-    //   .key(function(d) { d.created_at.setMinutes(0); d.created_at.setSeconds(0); return d.created_at; })
-    //   .rollup(function(d) { return d.length })
-    //   .entries(this.config.dataset);
-
-    var entriesPos = D3.nest()
+      var entriesPos = D3.nest()
       .key(function(d) { d.created_at.setMinutes(0); d.created_at.setSeconds(0); return d.created_at; })
       .rollup(function(d) { return d.length })
       .entries(pos);
@@ -114,26 +108,6 @@ export class TrendComponent implements OnChanges, AfterViewInit {
       .attr("class", "y axis")
       .attr("transform", "translate(20,0)")
       .call(D3.axisLeft(y).ticks(5).tickSize(-this.width));
-
-      // this.svg.append("path")
-      //   .data([entries])
-      //   .attr("class", "line")
-      //   .attr("d", valueline);
-      //
-      //
-      // this.svg.selectAll("dot")
-      //   .data(entries)
-      //   .enter().append("circle")
-      //   .attr("r", 3)
-      //   .attr("class", "dot")
-      //   .attr("cx", function(d) { return x(new Date(d.key)); })
-      //   .attr("cy", function(d) { return y(d.value); })
-      //   .attr("data-container", "body")
-      //   .attr("data-toggle", "popover")
-      //   .attr("data-trigger", "hover")
-      //   .attr("data-placement","top")
-      //   .attr("data-html", "true")
-      //   .attr("data-content", function(d) { return d.value + " Tweets<br>Fecha: " + d.key; });
 
 
     this.svg.append("path")

@@ -7,8 +7,8 @@
       </section>
 
       <div class="section-header">
-        <h6>Tweets por Canal</h6>
-        <em>- Cuantos tweets clasificó Watson por canal en las ultimas 12 horas</em>
+        <h6>Sentimiento por categoria</h6>
+        <em>- Tweets clasificados en las ultimas 12 horas</em>
         <div class="section-header-toolbar">
 					<a href="#" title="Compartir"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
           <a href="#" title="Compartir"><i class="fa fa-clipboard" aria-hidden="true"></i></a>
@@ -21,26 +21,14 @@
       </section>
 
       <div class="section-header">
-        <h6>Tendencia Positiva</h6>
-        <em>- Cantidad de tweets en los ultimos 3 días</em>
+        <h6>Tendencia</h6>
+        <em>- Sentimiento y cantidad de tweets en los ultimos 3 días</em>
         <div class="section-header-toolbar">
 					<a href="#" title="Compartir"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
 					<a href="#" title="Compartir"><i class="fa fa-clipboard" aria-hidden="true"></i></a>
 				</div>
       </div>
 
-      <section class="row">
-        <trend-chart class="col" [config]="TrendChartConfig"></trend-chart>
-      </section>
-
-      <div class="section-header">
-        <h6>Tendencia Negativa</h6>
-        <em>- Cantidad de tweets en los ultimos 3 días</em>
-        <div class="section-header-toolbar">
-					<a href="#" title="Compartir"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
-					<a href="#" title="Compartir"><i class="fa fa-clipboard" aria-hidden="true"></i></a>
-				</div>
-      </div>
 
       <section class="row">
         <trendNeg-chart class="col" [config]="TrendNegChartConfig"></trendNeg-chart>

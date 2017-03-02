@@ -81,14 +81,11 @@ export class BarComponent implements OnChanges, AfterViewInit {
 
     var max = D3.max(data, function(d){ return d.pos, d.neg});
 
-    // console.log (max);
-    //
-    // console.log (data);
 
     var x = D3.scaleLinear()
         .range([this.margin.left, this.width - this.margin.right])
         .domain([-max - 5 , max + 5 ]);
-      
+
     var y = D3.scaleBand()
               .rangeRound([0, this.height - this.margin.top*2.5, .2]);
 

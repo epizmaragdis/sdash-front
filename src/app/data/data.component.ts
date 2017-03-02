@@ -4,7 +4,6 @@ import { BubbleChartConfig } from '../bubble/bubble.config';
 import { BarChartConfig } from '../bar/bar.config';
 import { CounterConfig } from '../counter/count.config';
 import { TrendChartConfig } from '../trend/trend.config';
-import { TrendNegChartConfig } from '../trendNeg/trendNeg.config';
 
 @Component({
   selector: 'app-data',
@@ -129,18 +128,7 @@ getHistory() {
 
         this.TrendChartConfig = trendChartArea;
 
-        let trendNegChartArea: TrendNegChartConfig = {
-          dataset: history.docs
-            .filter(data => {
-            return data.sentiment.score <=0})
-            .map(data =>{
-            return { screen_name: data.screen_name, score: data.sentiment.score, created_at: new Date(data.created_at) }
-          })
-        };
-
-
-
-        this.TrendNegChartConfig = trendNegChartArea;
+      
 
 
 
