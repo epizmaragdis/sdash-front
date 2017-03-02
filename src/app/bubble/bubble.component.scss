@@ -32,7 +32,15 @@
 
 }
 
+.bubble-stats {
+  text-align: center;
+  font-size: 0.9em;
+  margin-bottom: 5px;
+}
 
+.bubble-stats-number{
+  font-size: 1.5em;
+}
 .node:hover .tweet {
     display:block;
 }

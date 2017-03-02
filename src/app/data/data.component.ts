@@ -4,6 +4,7 @@ import { BubbleChartConfig } from '../bubble/bubble.config';
 import { BarChartConfig } from '../bar/bar.config';
 import { CounterConfig } from '../counter/count.config';
 import { TrendChartConfig } from '../trend/trend.config';
+import { TrendNegChartConfig } from '../trendNeg/trendNeg.config';
 
 @Component({
   selector: 'app-data',
@@ -38,7 +39,7 @@ export class DataComponent implements OnInit {
 
         let bubbleChartArea: BubbleChartConfig = {
           dataset: tweets.docs.map(data => {
-            return { screen_name: data.screen_name, followers_count: data.followers_count, sentiment: data.sentiment.type, text: data.text };
+            return { screen_name: data.screen_name, followers_count: data.followers_count, sentiment: data.sentiment.type, text: data.text, intent: data.intents[0].intent };
           })
         };
 
@@ -51,19 +52,39 @@ export class DataComponent implements OnInit {
         //
         //
 
-        let barChartArea: BarChartConfig = {
-          intents: tweets.docs.reduce(function(intents, data) {
+
+        let barChartArea = {
+          data: tweets.docs.reduce(function(intents, data) {
             if (data.intents[0].intent in intents) {
-              intents[data.intents[0].intent]++;
-            }
-            else {
-              intents[data.intents[0].intent] = 1;
+              if (data.sentiment.score > 0) {
+                intents[data.intents[0].intent].pos++;
+                } else {
+                  intents[data.intents[0].intent].neg++
+                }
+            } else {
+                if (data.sentiment.score > 0) {
+
+                  intents[data.intents[0].intent]={
+                  intent: data.intents[0].intent,
+                  pos: 1,
+                  neg: 0
+                }
+              } else {
+                intents[data.intents[0].intent] = {
+                intent: data.intents[0].intent,
+                pos: 0,
+                neg: 1,
+              }
+              }
             }
             return intents;
           }, {})
         };
 
-        this.BarChartConfig = barChartArea.intents;
+        this.BarChartConfig = barChartArea.data;
+
+
+
 
         // Counter Service
         //
@@ -71,7 +92,7 @@ export class DataComponent implements OnInit {
 
         let counterArea: CounterConfig = {
           dataset: {
-          all_tweets :tweets.docs.length,
+          all_tweets: tweets.docs.length,
           followers_count: tweets.docs.reduce(function(followers_count, data) {
             followers_count = followers_count +data.followers_count;
             return followers_count;
@@ -96,12 +117,30 @@ getHistory() {
 
 
         let trendChartArea: TrendChartConfig = {
-          dataset: history.docs.map(data => {
-            return { screen_name: data.screen_name, followers_count: data.followers_count, created_at: new Date(data.created_at) };
+          dataset: history.docs
+            // .filter(data => {
+            // return data.sentiment.score >0})
+            .map(data =>{
+            return { screen_name: data.screen_name, score: data.sentiment.score, created_at: new Date(data.created_at) }
           })
         };
 
+
+
         this.TrendChartConfig = trendChartArea;
+
+        let trendNegChartArea: TrendNegChartConfig = {
+          dataset: history.docs
+            .filter(data => {
+            return data.sentiment.score <=0})
+            .map(data =>{
+            return { screen_name: data.screen_name, score: data.sentiment.score, created_at: new Date(data.created_at) }
+          })
+        };
+
+
+
+        this.TrendNegChartConfig = trendNegChartArea;
 
 
 

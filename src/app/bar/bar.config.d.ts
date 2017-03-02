@@ -1,5 +1,5 @@
 export interface BarChartConfig {
-  intents: Array<string>;
+  data: Array<{intent: string, pos: number, neg: number}>
 }
 //
 // export interface ChartConfig {

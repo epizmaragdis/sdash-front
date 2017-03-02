@@ -15,6 +15,8 @@ export class BarComponent implements OnChanges, AfterViewInit {
   @Input() config;
   @ViewChild('workarea') element: ElementRef;
 
+
+
   private host;
   private svg;
   private margin;
@@ -22,14 +24,14 @@ export class BarComponent implements OnChanges, AfterViewInit {
   private height;
   private htmlElement: HTMLElement;
   private dataset: any;
-  private stack;
-  private now;
+  private y;
+  private x;
   private start;
   private serie;
   private legend;
   private rect;
   private total;
-  private keys;
+  private yAxis;
   private xAxis;
 
   constructor() {
@@ -44,18 +46,11 @@ export class BarComponent implements OnChanges, AfterViewInit {
 
   ngOnChanges(): void {
 
-    this.now = Moment.utc();
-    this.start = Moment().subtract(55, 'minutes').utc();
 
     if (!this.config || this.config.length === 0 || !this.host) {
       return;
     }
     else {
-      this.dataset.columns = Object.keys(this.config);
-      this.config.date = this.now;
-      this.dataset.push(this.config);
-
-      // console.log(this.dataset);
 
       this.setup();
       this.buildSVG();
@@ -67,9 +62,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
   private setup(): void {
     this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
     this.width = this.htmlElement.clientWidth - this.margin.left - this.margin.right;
-    this.height = this.width * 0.4 - this.margin.top - this.margin.bottom;
-
-    this.stack = D3.stack().offset(D3.stackOffsetExpand);
+    this.height = this.width * 0.3 - this.margin.top - this.margin.bottom;
 
   }
 
@@ -83,92 +76,159 @@ export class BarComponent implements OnChanges, AfterViewInit {
   }
 
   private populate(): void {
+    // console.log(this.config);
+    var data = D3.values(this.config);
 
-    var width = this.width - this.margin.right - this.margin.left;
-    var height = this.height;
+    var max = D3.max(data, function(d){ return d.pos, d.neg});
 
-    var xScale = D3.scaleTime().range([20, this.width])
-      .domain([this.start, this.now]);
+    // console.log (max);
+    //
+    // console.log (data);
 
-    var zScale = D3.scaleOrdinal(['#1A4589','#9ADBF4','#007EA7  ','#EF233C', '#991B1E'])
-      .domain(this.dataset.columns);
+    var x = D3.scaleLinear()
+        .range([this.margin.left, this.width - this.margin.right])
+        .domain([-max - 5 , max + 5 ]);
+      
+    var y = D3.scaleBand()
+              .rangeRound([0, this.height - this.margin.top*2.5, .2]);
 
-    // var zScale2 = D3.scaleOrdinal(['#CCC','#000','#f0f0f0','#cccccc'])
-    //   .domain(this.dataset.columns);
+    var xAxis = D3.axisTop(x);
 
-    // var zScale = D3.scaleOrdinal(['positive','negative','#fdb9ae'])
-    //   .domain(this.dataset.columns);
+    var yAxis = D3.axisRight(y)
+                  .tickSize(0)
+                  .tickPadding(6);
 
-    var yScale = D3.scaleLinear().rangeRound([(this.height - 50), 10]);
+
+
+    y.domain(data.map(function (d) {
+      return d.intent;
+
+    }));
+
+    this.svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "positive")
+        .attr("x", function (d) { return x(Math.min(0, d.pos)); })
+        .attr("y", function (d) { return y(d.intent);    })
+        .attr("width", function (d) { return Math.abs(x(d.pos) - x(0)); })
+        .attr("height", this.height/(data.length +2))
+        .attr("transform", "translate(0," + this.margin.top*2.5 + ")")
+        .attr("data-container", "body")
+        .attr("data-toggle", "popover")
+        .attr("data-trigger", "hover")
+        .attr("data-placement","left")
+        .attr("data-content", function(d) { return d.pos + " positivos"; });
+
+    this.svg.selectAll(".bar2")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", "negative")
+        .attr("x", function (d) { return x(Math.min(0, -d.neg)); })
+        .attr("y", function (d) { return y(d.intent);  })
+        .attr("width", function (d) { return Math.abs(x(-d.neg) - x(0)); })
+        .attr("height", this.height/(data.length +2))
+        .attr("transform", "translate(0," + this.margin.top*2.5 + ")")
+        .attr("data-container", "body")
+        .attr("data-toggle", "popover")
+        .attr("data-trigger", "hover")
+        .attr("data-placement","left")
+        .attr("data-content", function(d) { return d.neg+ " negativos"; });
+
 
     this.svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(" + 0 + "," + (this.height - 50) + ")")
-      .call(D3.axisBottom(xScale));
-
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + this.margin.top*2.5 + ")")
+        .call(xAxis)
+        ;
 
     this.svg.append("g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(30,0)")
-      .call(D3.axisLeft(yScale).tickSize(-this.width).tickFormat(D3.format(".0%")));
+        .attr("class", "yAxis-bar")
+        .attr("transform", "translate(" + this.width/2 + ", " + this.margin.top*2 + ")")
+        .call (yAxis)
+        ;
 
-    this.serie = this.svg.selectAll(".serie")
-      .data(this.stack.keys(this.dataset.columns)(this.dataset))
-      .enter().append("g")
-      .attr("fill",  function(d) { return zScale(d.key); })
-      .attr("stroke", function(d) { return zScale(d.key); })
-      .attr("stroke-width", "2px");
-      // .attr("stroke-opacity", 1)
-      // .attr("stroke-width", 1)
-
-    this.serie.selectAll("rect")
-      .data(function(d) { return d; })
-      .enter().append("rect")
-      .attr("x", function(d) { return (xScale(d.data.date) - 20) ; })
-      .attr("y", function(d) { return yScale(d[1]); })
-      .attr("height", function(d) { return yScale(d[0]) - yScale(d[1]); })
-      .attr("width", 20)
-      .attr("opacity", "0.4")
-      .attr("stroke-opacity","0")
-      .attr("data-container", "body")
-      .attr("data-toggle", "popover")
-      .attr("data-trigger", "hover")
-      .attr("data-placement","left")
-      .attr("data-content", function(d) { return Math.round((d[1] - d[0]) * 100) + " %"; });
+        // window.addEventListener('resize', function() {
+        // console.log("The window was resized!");
+        // });
 
 
-    this.serie.selectAll("line")
-      .data(function(d) { return d; })
-      .enter().append("line")
-      .attr("x1", function(d) { return xScale(d.data.date) - 20; })
-      .attr("y1", function(d) { return yScale(d[1]); })
-      .attr("x2", function(d) { return xScale(d.data.date) })
-      .attr("y2", function(d) { return yScale(d[1]); });
-      // .attr("style", function(d) {
-      //   return "stroke:" + zScale(d.fill) + ";stroke-width:2px";
-      // });
 
 
-    this.legend = this.svg.append("g")
-      .selectAll("g")
-      .data(this.dataset.columns.reverse())
-      .enter().append("g")
-      .attr("transform", function(d, i) { return "translate(" + i * 100 + "," + (height - 20) + ")"; });
-
-    this.legend.append("rect")
-      .attr("x", 0)
-      .attr("width", 19)
-      .attr("height", 19)
-      .attr("fill", zScale);
-
-    this.legend.append("text")
-      .attr("class", "legend")
-      .attr("x", 25)
-      .attr("y", 9.5)
-      .attr("dy", "0.32em")
-      .text(function(d) { return d; });
 
 
+
+  //   var width = this.width - this.margin.right - this.margin.left;
+  //   var height = this.height;
+  //
+  //   var xScale = D3.scaleTime().range([20, this.width])
+  //     .domain([this.start, this.now]);
+  //
+  //   var zScale = D3.scaleOrdinal(['#1A4589','#9ADBF4','#007EA7  ','#EF233C', '#991B1E'])
+  //     .domain(this.dataset.columns);
+  //
+  //   var yScale = D3.scaleLinear().rangeRound([(this.height - 50), 10]);
+  //
+  //   this.svg.append("g")
+  //     .attr("class", "x axis")
+  //     .attr("transform", "translate(" + 0 + "," + (this.height - 50) + ")")
+  //     .call(D3.axisBottom(xScale));
+  //
+  //   this.svg.append("g")
+  //     .attr("class", "y axis")
+  //     .attr("transform", "translate(30,0)")
+  //     .call(D3.axisLeft(yScale).tickSize(-this.width).tickFormat(D3.format(".0%")));
+  //
+  //   this.serie = this.svg.selectAll(".serie")
+  //     .data(this.stack.keys(this.dataset.columns)(this.dataset))
+  //     .enter().append("g")
+  //     .attr("fill",  function(d) { return zScale(d.key); })
+  //     .attr("stroke", function(d) { return zScale(d.key); })
+  //     .attr("stroke-width", "2px");
+  //
+  //
+  //   this.serie.selectAll("rect")
+  //     .data(function(d) { return d; })
+  //     .enter().append("rect")
+  //     .attr("x", function(d) { return (xScale(d.data.date) - 20) ; })
+  //     .attr("y", function(d) { return yScale(d[1]); })
+  //     .attr("height", function(d) { return yScale(d[0]) - yScale(d[1]); })
+  //     .attr("width", 20)
+  //     .attr("opacity", "0.4")
+  //     .attr("stroke-opacity","0")
+
+  //
+  //
+  //   this.serie.selectAll("line")
+  //     .data(function(d) { return d; })
+  //     .enter().append("line")
+  //     .attr("x1", function(d) { return xScale(d.data.date) - 20; })
+  //     .attr("y1", function(d) { return yScale(d[1]); })
+  //     .attr("x2", function(d) { return xScale(d.data.date) })
+  //     .attr("y2", function(d) { return yScale(d[1]); });
+  //
+  //
+  //
+  //   this.legend = this.svg.append("g")
+  //     .selectAll("g")
+  //     .data(this.dataset.columns.reverse())
+  //     .enter().append("g")
+  //     .attr("transform", function(d, i) { return "translate(" + i * 100 + "," + (height - 20) + ")"; });
+  //
+  //   this.legend.append("rect")
+  //     .attr("x", 0)
+  //     .attr("width", 19)
+  //     .attr("height", 19)
+  //     .attr("fill", zScale);
+  //
+  //   this.legend.append("text")
+  //     .attr("class", "legend")
+  //     .attr("x", 25)
+  //     .attr("y", 9.5)
+  //     .attr("dy", "0.32em")
+  //     .text(function(d) { return d; });
+  //
+  //
     // Tooltip
 
     $(function () {

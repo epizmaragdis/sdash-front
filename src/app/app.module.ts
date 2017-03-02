@@ -9,6 +9,7 @@ import { BubbleComponent } from './bubble/bubble.component';
 import { BarComponent } from './bar/bar.component';
 import { CounterComponent } from './counter/counter.component';
 import { TrendComponent } from './trend/trend.component';
+import { TrendNegComponent } from './trendNeg/trendNeg.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { TrendComponent } from './trend/trend.component';
     BubbleComponent,
     BarComponent,
     CounterComponent,
-    TrendComponent
+    TrendComponent,
+    TrendNegComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,20 @@
+.graph {
+  width: 100%;
+  display: block;
+}
+
+.tick text {
+  fill: #bbb;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.x.axis line {
+  stroke: #fff;
+}
+
+.y.axis line, .y.axis path {
+  stroke: #ddd;
+}

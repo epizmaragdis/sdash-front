@@ -21,7 +21,7 @@
       </section>
 
       <div class="section-header">
-        <h6>Tendencia</h6>
+        <h6>Tendencia Positiva</h6>
         <em>- Cantidad de tweets en los ultimos 3 días</em>
         <div class="section-header-toolbar">
 					<a href="#" title="Compartir"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
@@ -31,6 +31,19 @@
 
       <section class="row">
         <trend-chart class="col" [config]="TrendChartConfig"></trend-chart>
+      </section>
+
+      <div class="section-header">
+        <h6>Tendencia Negativa</h6>
+        <em>- Cantidad de tweets en los ultimos 3 días</em>
+        <div class="section-header-toolbar">
+					<a href="#" title="Compartir"><i class="fa fa-share-alt" aria-hidden="true"></i></a>
+					<a href="#" title="Compartir"><i class="fa fa-clipboard" aria-hidden="true"></i></a>
+				</div>
+      </div>
+
+      <section class="row">
+        <trendNeg-chart class="col" [config]="TrendNegChartConfig"></trendNeg-chart>
       </section>
     </main>
 
