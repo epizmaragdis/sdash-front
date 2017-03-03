@@ -4,9 +4,9 @@
 
 .sidebar {
   height:100%;
-  position: fixed;
+  position: float;
   right:0;
-  top: 64px;
+  top: 0;
   bottom: 0;
   z-index: 1000;
   padding: 1rem;
@@ -18,7 +18,7 @@
 /* Sidebar navigation */
 
 .sidebar .nav {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .sidebar .nav-item {
@@ -38,6 +38,7 @@
  */
 
  /* Placeholders */
+
 .placeholders {
   padding-bottom: 3rem;
 }

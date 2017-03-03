@@ -60,9 +60,15 @@ export class BarComponent implements OnChanges, AfterViewInit {
   }
 
   private setup(): void {
-    this.margin = { top: 10, right: 10, bottom: 10, left: 10 };
+    if (this.htmlElement.clientWidth > 700){
+    this.margin = { top: 10, right: 10, bottom: 10, left:10 };
     this.width = this.htmlElement.clientWidth - this.margin.left - this.margin.right;
-    this.height = this.width * 0.3 - this.margin.top - this.margin.bottom;
+    this.height = this.width * 0.25 - this.margin.top - this.margin.bottom;}
+    else{
+      this.margin = { top: 2, right: 2, bottom: 2, left:2 };
+      this.width = this.htmlElement.clientWidth - this.margin.left - this.margin.right;
+      this.height = this.width*0.5 - this.margin.top - this.margin.bottom;
+    }
 
   }
 
@@ -87,7 +93,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
         .domain([-max - 5 , max + 5 ]);
 
     var y = D3.scaleBand()
-              .rangeRound([0, this.height - this.margin.top*2.5, .2]);
+              .rangeRound([0, this.height - 30, .2]);
 
     var xAxis = D3.axisTop(x);
 
@@ -110,7 +116,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
         .attr("y", function (d) { return y(d.intent);    })
         .attr("width", function (d) { return Math.abs(x(d.pos) - x(0)); })
         .attr("height", this.height/(data.length +2))
-        .attr("transform", "translate(0," + this.margin.top*2.5 + ")")
+        .attr("transform", "translate(0," + 30 + ")")
         .attr("data-container", "body")
         .attr("data-toggle", "popover")
         .attr("data-trigger", "hover")
@@ -125,7 +131,7 @@ export class BarComponent implements OnChanges, AfterViewInit {
         .attr("y", function (d) { return y(d.intent);  })
         .attr("width", function (d) { return Math.abs(x(-d.neg) - x(0)); })
         .attr("height", this.height/(data.length +2))
-        .attr("transform", "translate(0," + this.margin.top*2.5 + ")")
+        .attr("transform", "translate(0," + 30 + ")")
         .attr("data-container", "body")
         .attr("data-toggle", "popover")
         .attr("data-trigger", "hover")
@@ -135,13 +141,13 @@ export class BarComponent implements OnChanges, AfterViewInit {
 
     this.svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + this.margin.top*2.5 + ")")
+        .attr("transform", "translate(0," + 30 + ")")
         .call(xAxis)
         ;
 
     this.svg.append("g")
         .attr("class", "yAxis-bar")
-        .attr("transform", "translate(" + this.width/2 + ", " + this.margin.top*2 + ")")
+        .attr("transform", "translate(" + this.width/2 + ", " + 25 + ")")
         .call (yAxis)
         ;
 

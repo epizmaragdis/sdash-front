@@ -47,8 +47,50 @@
   height: 12px;
 }
 
-// @media screen and (min-width: 992px;)
-// .top-content ul.mini-stat > li {
-//     padding-left: 10px;
-//     padding-right: 10px;
-// }
+/*
+* Media
+*/
+@media (min-width: 1200px) {
+
+ }
+
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+ }
+
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+
+}
+
+/* Landscape phones and down */
+@media (max-width: 480px) {
+
+  .top-content ul.mini-stat h5 {
+      float: left;
+      margin: 0;
+      text-align: left;
+      font-size: 0.65em;
+      color: #bbb;
+  }
+
+  .top-content ul.mini-stat h5 .stat-value {
+      display: block;
+      font-size: 1.3em;
+      margin-top: 3px;
+  }
+  .top-content .mini-bar-chart img {
+    height: 8px;
+  }
+  .top-content .mini-bar-chart {
+      display: block;
+      float: right;
+      margin: 3px 0 0 10px;
+  }
+
+  .col-1 {
+    padding-left: 5px;
+  }
+
+
+}
